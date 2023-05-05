@@ -11,7 +11,7 @@ contract MonkeyNFT is ERC721, ERC721Enumerable, Pausable, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-    uint public MAX_SUPPLY = 2000;
+    uint public MAX_SUPPLY = 4;
     uint public PUBLIC_MINT_PRICE = 0.01 ether;
     uint public WHITELIST_MINT_PRICE = 0.001 ether;
     uint public MAX_WHITELIST_ADDRESS = 2;
