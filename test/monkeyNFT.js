@@ -13,6 +13,12 @@ describe("MonkeyNFT", function () {
   });
 
   describe("WhiteListing", function () {
+    it("should revert if user is already whitelisted", async function () {
+      await monkeyNFT.connect(user1).getWhiteList();
+      await expect(monkeyNFT.connect(user1).getWhiteList()).to.be.revertedWith(
+        "Already added"
+      );
+    });
     it("should add users to whitelist", async function () {
       await monkeyNFT.connect(user1).getWhiteList();
       expect(await monkeyNFT.whiteListAddress(user1.address)).to.equal(true);

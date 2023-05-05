@@ -39,6 +39,7 @@ contract MonkeyNFT is ERC721, ERC721Enumerable, Pausable, Ownable {
     }
 
     function getWhiteList() public {
+        require(!whiteListAddress[msg.sender],'Already added');
         require(TOTAL_WHITELIST_ADDRESS < MAX_WHITELIST_ADDRESS, "Max out");
         TOTAL_WHITELIST_ADDRESS++;
         whiteListAddress[msg.sender] = true;
