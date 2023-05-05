@@ -51,7 +51,7 @@ contract MonkeyNFT is ERC721, ERC721Enumerable, Pausable, Ownable {
             msg.value == PUBLIC_MINT_PRICE * quantity,
             "Please pay the exact amount!"
         );
-        require(mintedWallet[msg.sender] < 3, "Max per wallet reached!");
+        require(mintedWallet[msg.sender] + quantity <= 3, "Max per wallet reached!");
 
         for (uint i = 0; i < quantity; i++) {
             uint256 tokenId = _tokenIdCounter.current();
@@ -69,7 +69,7 @@ contract MonkeyNFT is ERC721, ERC721Enumerable, Pausable, Ownable {
             msg.value == WHITELIST_MINT_PRICE * quantity,
             "Please pay the exact amount!"
         );
-        require(mintedWallet[msg.sender] < 3, "Max per wallet reached!");
+        require(mintedWallet[msg.sender] + quantity <= 3, "Max per wallet reached!");
 
         for (uint i = 0; i < quantity; i++) {
             uint256 tokenId = _tokenIdCounter.current();

@@ -105,6 +105,10 @@ describe("MonkeyNFT", function () {
       const totalSupply = await monkeyNFT.totalSupply();
       await expect(mintedWallet.toString()).to.equal("2");
       await expect(totalSupply.toString()).to.equal("2");
+
+      //checking funds transfered to contract or not;
+      const Balance = await ethers.provider.getBalance(monkeyNFT.address);
+      expect(Balance.toString()).to.equal(ethers.utils.parseEther("0.02"));
     });
 
     it("should mint NFT from whiteListMint if user is added", async function () {
@@ -121,6 +125,41 @@ describe("MonkeyNFT", function () {
       const totalSupply = await monkeyNFT.totalSupply();
       await expect(mintedWallet.toString()).to.equal("1");
       await expect(totalSupply.toString()).to.equal("1");
+
+      //checking funds transfered to contract or not;
+      const Balance = await ethers.provider.getBalance(monkeyNFT.address);
+      expect(Balance.toString()).to.equal(ethers.utils.parseEther("0.001"));
+    });
+  });
+
+  describe("Withdraw Funds", function () {
+    it("should revert if caller is not owner", async function () {
+      // owner from getSigners() is our owner not user1;
+      await expect(
+        monkeyNFT.connect(user1).withdrawFunds(user2.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+    });
+
+    it("should transfer funds if its owner", async function () {
+      //minting NFT for funds in smart contract;
+      await monkeyNFT
+        .connect(user1)
+        .publicMint(3, { value: ethers.utils.parseEther("0.03") });
+
+      //checking funds have transfer to contract or not;
+      const initialBalance = await ethers.provider.getBalance(
+        monkeyNFT.address
+      );
+      expect(initialBalance.toString()).to.equal(
+        ethers.utils.parseEther("0.03")
+      );
+
+      //calling withdraw function;
+      await monkeyNFT.connect(owner).withdrawFunds(user1.address);
+
+      //Now contract balance should be zero;
+      const finalBalance = await ethers.provider.getBalance(monkeyNFT.address);
+      expect(finalBalance.toString()).to.equal("0");
     });
   });
 });
