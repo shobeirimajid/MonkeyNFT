@@ -13,35 +13,47 @@ describe("MonkeyNFT", function () {
   });
 
   describe("WhiteListing", function () {
+    // I have done maxwhitelisting = 2 for easy testing;
+
     it("should revert if user is already whitelisted", async function () {
+      //adding uer1 to whitelist;
       await monkeyNFT.connect(user1).getWhiteList();
+
+      //again trying to get whitelist so it will revert;
       await expect(monkeyNFT.connect(user1).getWhiteList()).to.be.revertedWith(
         "Already added"
       );
     });
     it("should add users to whitelist", async function () {
+      //adding uer1 to whitelist;
       await monkeyNFT.connect(user1).getWhiteList();
+
+      //checking its added or not;
       expect(await monkeyNFT.whiteListAddress(user1.address)).to.equal(true);
       expect(await monkeyNFT.TOTAL_WHITELIST_ADDRESS()).to.equal(1);
     });
 
     it("should revert if whitelisting is full", async function () {
-      // I have done maxwhitelisting = 2 for testing
+      // max whitelisting is 2 and we are additn user1/2;
       await monkeyNFT.connect(user1).getWhiteList();
       await monkeyNFT.connect(user2).getWhiteList();
+
+      //it will revert because max(2) reached;
       await expect(monkeyNFT.connect(user3).getWhiteList()).to.be.revertedWith(
         "Max out"
       );
     });
   });
 
-  describe("PublicMinting", function () {
+  describe("Minting", function () {
     //For this test we are taking maxSupply = 4;
+
     it("should revert if supply max out", async function () {
       //below we are minting 3 NFT and after that it will fail;
       await monkeyNFT
         .connect(user1)
         .publicMint(3, { value: ethers.utils.parseEther("0.03") });
+
       //It will revert because we are minting 2,so it will max out;
       await expect(
         monkeyNFT
@@ -73,17 +85,42 @@ describe("MonkeyNFT", function () {
       ).to.be.revertedWith("Max per wallet reached!");
     });
 
-    it("should mint NFT", async function () {
+    it("should revert if user is not whitelisted", async function () {
+      //user1 is not whitelisted so it will revert;
+      await expect(
+        monkeyNFT
+          .connect(user1)
+          .whiteListMint(1, { value: ethers.utils.parseEther("0.001") })
+      ).to.be.revertedWith("You are not in the whitelist!");
+    });
+
+    it("should mint NFT from publicMint", async function () {
       //minting 2 nft from user1;
       await monkeyNFT
         .connect(user1)
         .publicMint(2, { value: ethers.utils.parseEther("0.02") });
 
-      //checking totalSupply and mintedWallet mapping;
+      //checking totalSupply and mintedWallet mapping to get confirm its minted;
       const mintedWallet = await monkeyNFT.mintedWallet(user1.address);
       const totalSupply = await monkeyNFT.totalSupply();
       await expect(mintedWallet.toString()).to.equal("2");
       await expect(totalSupply.toString()).to.equal("2");
+    });
+
+    it("should mint NFT from whiteListMint if user is added", async function () {
+      //getting whitelisted
+      await monkeyNFT.connect(user1).getWhiteList();
+
+      //minting NFT at 0.001 ethres;
+      await monkeyNFT
+        .connect(user1)
+        .whiteListMint(1, { value: ethers.utils.parseEther("0.001") });
+
+      //checking totalSupply and mintedWallet mapping to get confirm its minted;
+      const mintedWallet = await monkeyNFT.mintedWallet(user1.address);
+      const totalSupply = await monkeyNFT.totalSupply();
+      await expect(mintedWallet.toString()).to.equal("1");
+      await expect(totalSupply.toString()).to.equal("1");
     });
   });
 });
