@@ -111,6 +111,17 @@ describe("MonkeyNFT", function () {
       expect(Balance.toString()).to.equal(ethers.utils.parseEther("0.02"));
     });
 
+    it("should emit an event when NFT is minted", async function () {
+      //checking events by minting an NFT
+      await expect(
+        monkeyNFT
+          .connect(user1)
+          .publicMint(1, { value: ethers.utils.parseEther("0.01") })
+      )
+        .to.emit(monkeyNFT, "MintedNFT")
+        .withArgs(user1.address, 0);
+    });
+
     it("should mint NFT from whiteListMint if user is added", async function () {
       //getting whitelisted
       await monkeyNFT.connect(user1).getWhiteList();
