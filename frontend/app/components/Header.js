@@ -1,6 +1,10 @@
+"use client";
+import { AppContext } from "@/GlobalContext/AppProvider";
 import Link from "next/link";
+import { useContext } from "react";
 
 const Header = () => {
+  const { connectWallet, account, monkeyNFT } = useContext(AppContext);
   return (
     <header className="bg-purple-400 py-3">
       <nav className="flex justify-between items-center w-[90%] mx-auto">
@@ -24,8 +28,11 @@ const Header = () => {
           </ul>
         </div>
         <div>
-          <button className="text-lg px-5 py-1 rounded-lg border-2 border-black font-bold">
-            Connect
+          <button
+            className="text-lg px-5 py-1 rounded-lg border-2 border-black font-bold hover:bg-purple-600"
+            onClick={connectWallet}
+          >
+            {account ? account : "Connect"}
           </button>
         </div>
       </nav>
