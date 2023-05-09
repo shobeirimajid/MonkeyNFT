@@ -13,7 +13,7 @@ const HomePage = () => {
   const [yourNFT, setYourNFT] = useState("-");
 
   useEffect(() => {
-    const getTotalSupply = async () => {
+    const initialData = async () => {
       try {
         const totalSupply = await monkeyNFT.totalSupply();
         const yourNFT = await monkeyNFT.mintedWallet(account);
@@ -23,8 +23,8 @@ const HomePage = () => {
         console.log(error.message);
       }
     };
-    account && getTotalSupply();
-  }, [account, totalSupply]);
+    account && initialData();
+  }, [account, totalSupply, yourNFT]);
 
   const publicMintNFT = async (e) => {
     e.preventDefault();
@@ -48,6 +48,15 @@ const HomePage = () => {
       console.log(err.message);
     }
   };
+
+  const getWhiteList = async () => {
+    try {
+      await monkeyNFT.getWhiteList();
+      console.log("listed");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <>
       <div className="grid grid-cols-2 gap-5 w-[90%] mx-auto py-[80px] items-center">
@@ -56,8 +65,11 @@ const HomePage = () => {
           <h3 className="text-2xl fond-bold mt-4">
             Create, Own, and Sell Unique Digital Assets
           </h3>
-          <button className="text-lg px-6 py-2 bg-purple-700 rounded-xl text-white mt-5 hover:bg-purple-500">
-            Mint Now
+          <button
+            onClick={getWhiteList}
+            className="text-lg px-6 py-2 bg-purple-700 rounded-xl text-white mt-5 hover:bg-purple-500"
+          >
+            Get WhiteList
           </button>
         </div>
         <div>
