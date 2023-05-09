@@ -34,7 +34,7 @@ const AppProvider = ({ children }) => {
         setState({
           provider,
           signer,
-          account,
+          account: account[0],
           monkeyNFT,
         });
       } catch (error) {}

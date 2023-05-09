@@ -29,8 +29,8 @@ const HomePage = () => {
       await monkeyNFT.publicMint(quantity, {
         value: ethers.utils.parseEther(value.toString()),
       });
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      console.log(err.message);
     }
   };
   return (

@@ -29,10 +29,12 @@ const Header = () => {
         </div>
         <div>
           <button
-            className="text-lg px-5 py-1 rounded-lg border-2 border-black font-bold hover:bg-purple-600"
+            className="text-lg px-4 py-1 rounded-lg border-2 border-black font-bold hover:bg-purple-600"
             onClick={connectWallet}
           >
-            {account ? account : "Connect"}
+            {account
+              ? `${account.substring(0, 7)}...${account.substring(38)} `
+              : "Connect Wallet"}
           </button>
         </div>
       </nav>
